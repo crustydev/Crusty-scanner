@@ -8,12 +8,10 @@ mod scanners;
 mod utils;
 mod ports_list;
 
+
 fn main() -> Result<()> {
     env::set_var("RUST_LOG", "info, trust_dns_proto=error");
     env_logger::init();
-
-    println!("Welcome to crusty_scanner!");
-    core::help();
 
     let cli = App::new(clap::crate_name!())
         .version(clap::crate_version!())
@@ -42,7 +40,7 @@ fn main() -> Result<()> {
     } else if let Some(matches) = cli.subcommand_matches("scan") {
         let target = matches.value_of("target").unwrap();
         core::scan(target)?;
-    }
+    } 
 
     Ok(())
 

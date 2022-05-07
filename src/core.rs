@@ -16,34 +16,34 @@ pub fn list_scanners() {
     let cve_scanners = scanners::cve_scanners();
     let subdomain_scanners = scanners::subdomain_scanners();
 
-    println!("Subdomain scanners");
+    println!("\nSubdomain scanners:");
     for scanner in subdomain_scanners {
-        println!("   {}: {}", scanner.name(), scanner.about());
+        println!("*    {}\n\t{}", scanner.name(), scanner.about());
     }
 
-    println!("________________________________________________\n
-        ___________________________________________________\n");
+    println!("\n__________________________________________________________________________________________________________________");
 
-    println!("CVE scanners");
+    println!("\nCVE scanners:");
     for scanner in cve_scanners {
-        println!("    {}: {}", scanner.name(), scanner.about());
+        println!("*    {}\n\t{}", scanner.name(), scanner.about());
     }
 }
 
 pub fn about() {
+    println!("Welcome to crusty_scanner!\n");
     println!("Authored by: Fatoke Ademola Paul(crusty dev)");
     println!("Written in: The Rust Programming Language");
     println!("Inspiration drawn from: tricoder by Sylvain Kerkour");
     println!("What it does: Scans a target domain and its subdomains for vulnerabilities");
-    println!("Enjoy your use!");
+    println!("Enjoy using!");
 }
 
 pub fn help() {
     println!("Usage");
-    println!("* enter 'cargo run crusty_scanner scanners' to list scanners");
-    println!("* enter 'cargo run crusty_scanner about' to see details about this program");
-    println!("* enter 'cargo run crusty_scanner scan <target.com>' to scan target domain");
-    println!("* enter 'cargo run crusty_scanner help' to view help again");
+    println!("* enter 'cargo run scanners' to list scanners");
+    println!("* enter 'cargo run about' to see details about this program");
+    println!("* enter 'cargo run scan <target.com>' to scan target domain");
+    println!("* enter 'cargo run help' to view help again\n");
 }
 
 pub fn scan(target: &str) -> Result<(), Error> {
