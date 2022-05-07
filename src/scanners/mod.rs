@@ -6,7 +6,6 @@ pub mod models;
 mod subdomains;
 mod cves;
 
-
 pub fn cve_scanners() -> Vec<Box<dyn CveScanner>> {
     return vec![
         Box::new(cves::DotEnvScan::new()),
@@ -20,10 +19,11 @@ pub fn cve_scanners() -> Vec<Box<dyn CveScanner>> {
 pub fn subdomain_scanners() -> Vec<Box<dyn SubdomainScanner>> {
     return vec![
         Box::new(subdomains::BruteForceScan::new()),
-        Box::new(subdomains::CertSpotterScan::new()),
         Box::new(subdomains::CrtShScan::new()),
-        Box::new(subdomains::SecurityTrailsScan::new()),
         Box::new(subdomains::Sublist3rScan::new()),
+        Box::new(subdomains::ThreatcrowdScan::new()),
+        Box::new(subdomains::ThreatMinerScan::new()),
+        Box::new(subdomains::UrlScan::new()),
         Box::new(subdomains::WebArchiveScan::new())
     ];
 }
@@ -31,7 +31,7 @@ pub fn subdomain_scanners() -> Vec<Box<dyn SubdomainScanner>> {
 #[derive(Debug, Clone)]
 pub enum CveScanResult {
     DotEnvFileDisclosure(String),
-    DSStoreDisclosure(String),
+    DSStoreFileDisclosure(String),
     ElasticsearchUnauthenticatedAccess(String),
     GitlabOpenRegistration(String),
     PrometheusOpenDashboard(String)

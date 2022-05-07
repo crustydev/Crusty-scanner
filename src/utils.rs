@@ -48,7 +48,7 @@ pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
 
     tokio::spawn(async move {
         for port in PORTS_LIST {
-            input_tx.send(*port).await;
+            let _ = input_tx.send(*port).await;
         }
     });
 
@@ -59,7 +59,7 @@ pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
             async move {
                 let port = scan_port(address, port).await;
                 if port.conn_open {
-                    output_tx.send(port).await;
+                    let _ = output_tx.send(port).await;
                 }
             }
         }).await;
@@ -77,7 +77,6 @@ pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
 ///  
 async fn scan_port(mut socket_address: SocketAddr, port: u16) -> Port {
     let timeout = Duration::from_secs(5);
-    let is_open = false;
 
     socket_address.set_port(port);
 
@@ -119,8 +118,6 @@ pub async fn resolve_dns(dns_resolver: &Resolver, subdomain: Subdomain) -> Optio
 /// 
 #[derive(Error, Debug, Clone)]
 pub enum Error {
-    #[error("Enter: `crustyscanner <example.com>` to use..")]
-    CliUseError,
     #[error("{0}, Invalid HTTP response")]
     InvalidHttpResponse(String),
     #[error("{0}, Reqwest Error")]
@@ -143,4 +140,3 @@ impl std::convert::From<reqwest::Error> for Error {
         return Error::ReqwestError(error_message.to_string());
     }
 }
-
