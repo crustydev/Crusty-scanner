@@ -8,50 +8,51 @@ use async_trait::async_trait;
 use std::collections::HashSet;
 
 
-pub struct Sublist3rScan {}
+pub struct ThreatMinerScan {}
 
-impl Sublist3rScan {
+impl ThreatMinerScan {
     pub fn new() -> Self {
-        return Sublist3rScan {}
+        return ThreatMinerScan {}
     }
 }
 
-impl Scanner for Sublist3rScan {
+impl Scanner for ThreatMinerScan {
     fn name(&self) -> String {
-        return String::from("Sublist3r.com scanner");
+        return String::from("Threatminer scanner");
     }
 
     fn about(&self) -> String {
-        return String::from("Finds subdomains using Sublist3r.com's online database.")
+        return String::from("Finds subdomains using threatminer.org's online api.")
     }
 }
 
 /// Json deserialization struct for retrieving results from response body
 /// 
 #[derive(Clone, Debug, Deserialize)]
-struct Sublist3rSubdomains {
+struct ThreatMinerSubdomains {
     subdomain: String
 }
 
 
 #[async_trait]
-impl SubdomainScanner for Sublist3rScan {
+impl SubdomainScanner for ThreatMinerScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
-        log::info!("Getting subdomains from sublist3r.com...");
+        log::info!("Getting subdomains from threatminer.org...");
 
-        let url = format!("https://api.sublist3r.com/search.php?domain={}", target);
+        let url = format!("https://api.threatminer.org/v2/domain.php?q={}&api=True&rt=5", target);
         let res = reqwest::get(&url).await?;
 
         if !res.status().is_success() {
             return Err(Error::InvalidHttpResponse(self.name()));
         }
 
-        let threatcrowd_entries: Vec<Sublist3rSubdomains> = match res.json().await {
-            Ok(result) => result,
+        let threatminer_entries: Vec<ThreatMinerSubdomains> = match res.json().await {
+            Ok(info) => info,
             Err(_) => return Err(Error::InvalidHttpResponse(self.name()))
         };
 
-        let subdomains: HashSet<String> = threatcrowd_entries
+        // we use a hashset to prevent duplication of data
+        let subdomains: HashSet<String> = threatminer_entries
             .into_iter()
             .map(|entry| {
                 entry
@@ -65,7 +66,7 @@ impl SubdomainScanner for Sublist3rScan {
             .collect();
 
         Ok(subdomains.into_iter().collect())
-
     }
-
+    
 }
+

@@ -7,55 +7,56 @@ use serde::Deserialize;
 use async_trait::async_trait;
 use std::collections::HashSet;
 
+pub struct ThreatcrowdScan {}
 
-pub struct Sublist3rScan {}
-
-impl Sublist3rScan {
+impl ThreatcrowdScan {
     pub fn new() -> Self {
-        return Sublist3rScan {}
+        return ThreatcrowdScan {}
     }
 }
 
-impl Scanner for Sublist3rScan {
+impl Scanner for ThreatcrowdScan {
     fn name(&self) -> String {
-        return String::from("Sublist3r.com scanner");
+        return String::from("Threatcrowd.org scanner");
     }
 
     fn about(&self) -> String {
-        return String::from("Finds subdomains using Sublist3r.com's online database.")
+        return String::from("Finds subdomains using Threatcrowd.org's online database.");
     }
 }
+
 
 /// Json deserialization struct for retrieving results from response body
 /// 
 #[derive(Clone, Debug, Deserialize)]
-struct Sublist3rSubdomains {
-    subdomain: String
+struct ThreatcrowdSubdomains {
+    value: String
 }
 
 
 #[async_trait]
-impl SubdomainScanner for Sublist3rScan {
+impl SubdomainScanner for ThreatcrowdScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
-        log::info!("Getting subdomains from sublist3r.com...");
+        log::info!("Getting subdomains from threatcrowd.org...");
 
-        let url = format!("https://api.sublist3r.com/search.php?domain={}", target);
+        let url = format!("https://threatcrowd.org/searchApi/v2/domain/report/?domain={}", target);
         let res = reqwest::get(&url).await?;
 
         if !res.status().is_success() {
             return Err(Error::InvalidHttpResponse(self.name()));
         }
 
-        let threatcrowd_entries: Vec<Sublist3rSubdomains> = match res.json().await {
-            Ok(result) => result,
+        let threatcrowd_entries: Vec<ThreatcrowdSubdomains> = match res.json().await {
+            Ok(info) => info,
             Err(_) => return Err(Error::InvalidHttpResponse(self.name()))
         };
-
+        
+        // We use a hashset to prevent duplication of data
         let subdomains: HashSet<String> = threatcrowd_entries
             .into_iter()
             .map(|entry| {
                 entry
-                    .subdomain
+                    .value
                     .split("\n")
                     .map(|subdomain| subdomain.trim().to_string())
                     .collect::<Vec<String>>()
@@ -66,6 +67,6 @@ impl SubdomainScanner for Sublist3rScan {
 
         Ok(subdomains.into_iter().collect())
 
-    }
-
+    } 
 }
+

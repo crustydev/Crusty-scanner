@@ -18,11 +18,11 @@ impl CrtShScan {
 
 impl Scanner for CrtShScan {
     fn name(&self) -> String {
-        return String::from("crt.sh subdomains scan");
+        return String::from("Crt.sh scanner");
     }
 
     fn about(&self) -> String {
-        return String::from("Finding subdomains using crt.sh's online list..");
+        return String::from("Finds subdomains using crt.sh's online api.");
     }
 }
 
@@ -38,7 +38,7 @@ impl SubdomainScanner for CrtShScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
         log::info!("Getting subdomains from crt.sh...");
 
-        let url = format!("https://crt.sh/?q=%25.{}&output=json", domain);
+        let url = format!("https://crt.sh/?q=%25.{}&output=json", target);
         let res = reqwest::get(&url).await?;
 
         if !res.status().is_success() {
@@ -55,7 +55,7 @@ impl SubdomainScanner for CrtShScan {
             .into_iter()
             .map(|entry| {
                 entry
-                    .name_value
+                    .value
                     .split("\n")
                     .map(|subdomain| subdomain.trim().to_string())
                     .collect::<Vec<String>>()

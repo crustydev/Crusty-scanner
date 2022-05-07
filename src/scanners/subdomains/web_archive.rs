@@ -18,11 +18,11 @@ impl WebArchiveScan {
 
 impl Scanner for WebArchiveScan {
     fn name(&self) -> String {
-        return String::from("web.archive.org subdomains scan");
+        return String::from("Web.archive.org subdomains scan");
     }
 
     fn about(&self) -> String {
-        return String::from("Use web.archive.org's online database to find subdomains");
+        return String::from("Finds subdomains using web.archive.org's online database search.");
     }
 }
 
