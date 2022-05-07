@@ -1,7 +1,7 @@
 use crate::{
     scanners::CveScanResult,
     scanners::traits::{Scanner, CveScanner},
-    Error,
+    utils::Error,
 };
 
 use async_trait::async_trait;
@@ -27,11 +27,11 @@ impl DsStoreScan {
 
 impl Scanner for DsStoreScan {
     fn name(&self) -> String {
-        String::from("ds_store scanner")
+        String::from("Ds_store scanner")
     }
 
     fn about(&self) -> String {
-        String::from("Check if a .DS_Store file disclosure exists")
+        String::from("Scans for a DsStore disclosure.")
     }
 }
 
@@ -51,7 +51,7 @@ impl CveScanner for DsStoreScan {
 
         let body = res.bytes().await?;
         if self.is_ds_store_file(&body.as_ref()) {
-            return Ok(Some(CveScanResult::DsStoreFileDisclosure(url)));
+            return Ok(Some(CveScanResult::DSStoreFileDisclosure(url)));
         }
 
         Ok(None)

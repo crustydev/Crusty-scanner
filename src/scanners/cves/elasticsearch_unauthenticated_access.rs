@@ -1,7 +1,7 @@
 use crate::{
     scanners::CveScanResult,
     scanners::traits::{Scanner, CveScanner},
-    Error,
+    utils::Error,
 };
 
 use async_trait::async_trait;
@@ -22,14 +22,14 @@ impl Scanner for ElasticsearchScan {
     }
 
     fn about(&self) -> String {
-        String::from("Scans address for Elastic search unauthenticated access")
+        String::from("Scans for Elastic search unauthenticated access.")
     }
 }
 
 #[derive(Clone, Debug, Deserialize)]
 struct ElasticsearchJson {
-    pub name: String,
-    pub cluster_name: String,
+    pub _name: String,
+    pub _cluster_name: String,
     pub tagline: String,
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     scanners::CveScanResult,
     scanners::traits::{Scanner, CveScanner},
-    Error,
+    utils::Error,
 };
 
 use async_trait::async_trait;
@@ -18,11 +18,11 @@ impl PrometheusDashboardScan {
 
 impl Scanner for PrometheusDashboardScan {
     fn name(&self) -> String {
-        String::from("Prometheus Dashboard vulnerability scan")
+        String::from("Prometheus Dashboard vulnerability scanner")
     }
 
     fn about(&self) -> String {
-        String::from("Scans to see if Prometheus Dashboard is open to unauthenticated access")
+        String::from("Scans to see if Prometheus Dashboard is open to unauthenticated access.")
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     scanners::CveScanResult,
     scanners::traits::{Scanner, CveScanner},
-    Error,
+    utils::Error,
 };
 
 use async_trait::async_trait;
@@ -17,11 +17,11 @@ impl GitlabOpenScan {
 
 impl Scanner for GitlabOpenScan {
     fn name(&self) -> String {
-        String::from("Gitlab open registration scan")
+        String::from("Gitlab open registration scanner.")
     }
 
     fn about(&self) -> String {
-        String::from("Checks if a GitLab instance is open to registrations")
+        String::from("Scans to see if a GitLab instance is open to registrations.")
     }
 }
 
@@ -41,7 +41,7 @@ impl CveScanner for GitlabOpenScan {
 
         let body = res.text().await?;
         if body.contains("This is a self-managed instance of GitLab") && body.contains("Register") {
-            return Ok(Some(CveScanResult::GitlabOpenRegistrations(url)));
+            return Ok(Some(CveScanResult::GitlabOpenRegistration(url)));
         }
 
         Ok(None)

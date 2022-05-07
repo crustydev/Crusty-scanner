@@ -1,7 +1,7 @@
 use crate::{
     scanners::CveScanResult,
     scanners::traits::{Scanner, CveScanner},
-    Error
+    utils::Error
 };
 
 use async_trait::async_trait;
@@ -22,7 +22,7 @@ impl Scanner for DotEnvScan {
     }
 
     fn about(&self) -> String {
-        String::from("Checks to see if there's a .env file disclosure")
+        String::from("Scans for a .env file disclosure.")
     }
 }
 
