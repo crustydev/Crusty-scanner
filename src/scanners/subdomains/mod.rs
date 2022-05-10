@@ -10,8 +10,8 @@ pub use threatcrowd::ThreatCrowdScan;
 mod threatminer;
 pub use threatminer::ThreatMinerScan;
 
-mod web_archive;
-pub use web_archive::WebArchiveScan;
+//mod web_archive;
+//pub use web_archive::WebArchiveScan;
 
 
 
