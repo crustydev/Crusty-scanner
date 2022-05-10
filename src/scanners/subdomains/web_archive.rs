@@ -47,6 +47,53 @@ impl SubdomainScanner for WebArchiveScan {
             Err(_) => return Err(Error::InvalidHttpResponse(self.name())),
         };
 
+        /*
+        let(input_tx, input_rx) = mpsc::channel(100);
+        let(output_tx, output_rx) = mpsc::channel(100);
+
+
+        tokio::spawn(async move {
+            let urls = web_archive_urls
+                            .0
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<String>>();
+            for url in urls {
+                let _ = input_tx.send(url).await;
+            }  
+        });
+
+        let input_rx_stream = tokio_stream::wrappers::ReceiverStream::new(input_rx);
+            input_rx_stream
+                .for_each_concurrent(concurrency, |url| {
+                    let output_tx = output_tx.clone();
+                    async move {
+                        let domain = 
+                            Url::parse(&url)
+                                .map_err(|err| {
+                                    log::error!("{}: error parsing url: {}", self.name(), err);
+                                    err
+                                });
+                    
+                        match domain {
+                            Ok(domain) => {
+                                let domain_str = domain.host_str().map(|host| host.to_string());
+                                let _ = output_tx.send(domain_str.unwrap()).await;
+                            },
+                            _ => {}
+                        }
+                    }
+                })
+                .await;
+
+        drop(output_tx);
+
+        let output_rx_stream = tokio_stream::wrappers::ReceiverStream::new(output_rx);
+        let subdomains: HashSet<String> = output_rx_stream.collect().await;
+
+        return Ok(subdomains.into_iter().collect());
+        */
+
         let subdomains: HashSet<String> = web_archive_urls
             .0
             .into_iter()
