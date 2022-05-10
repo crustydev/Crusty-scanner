@@ -29,8 +29,9 @@ impl Scanner for ThreatMinerScan {
 /// Json deserialization struct for retrieving results from response body
 /// 
 #[derive(Clone, Debug, Deserialize)]
-struct ThreatMinerSubdomains {
-    subdomain: String
+struct ThreatMinerResponse {
+    status_code: String,
+    results: Vec<String>
 }
 
 
@@ -46,17 +47,22 @@ impl SubdomainScanner for ThreatMinerScan {
             return Err(Error::InvalidHttpResponse(self.name()));
         }
 
-        let threatminer_entries: Vec<ThreatMinerSubdomains> = match res.json().await {
+        let response: ThreatMinerResponse = match res.json().await {
             Ok(info) => info,
             Err(_) => return Err(Error::InvalidHttpResponse(self.name()))
         };
 
+        if response.status_code != "200" {
+            return Err(Error::InvalidHttpResponse(format!("{}. Status code: {}",
+                         self.name(), response.status_code)));
+        }
+
         // we use a hashset to prevent duplication of data
-        let subdomains: HashSet<String> = threatminer_entries
+        let subdomains: HashSet<String> = response
+            .results
             .into_iter()
             .map(|entry| {
                 entry
-                    .subdomain
                     .split("\n")
                     .map(|subdomain| subdomain.trim().to_string())
                     .collect::<Vec<String>>()

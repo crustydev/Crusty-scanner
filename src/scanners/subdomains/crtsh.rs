@@ -29,8 +29,8 @@ impl Scanner for CrtShScan {
 /// Json deserialization struct for retrieving results from response body
 /// 
 #[derive(Clone, Debug, Deserialize)]
-struct CrtShSubdomains {
-    value: String
+struct CrtShResponse {
+    name_value: String
 }
 
 #[async_trait]
@@ -45,7 +45,7 @@ impl SubdomainScanner for CrtShScan {
             return Err(Error::InvalidHttpResponse(self.name()));
         }
 
-        let crtsh_entries: Vec<CrtShSubdomains> = match res.json().await {
+        let crtsh_entries: Vec<CrtShResponse> = match res.json().await {
             Ok(info) => info,
             Err(_) => return Err(Error::InvalidHttpResponse(self.name())),
         };
@@ -55,7 +55,7 @@ impl SubdomainScanner for CrtShScan {
             .into_iter()
             .map(|entry| {
                 entry
-                    .value
+                    .name_value
                     .split("\n")
                     .map(|subdomain| subdomain.trim().to_string())
                     .collect::<Vec<String>>()
@@ -66,4 +66,4 @@ impl SubdomainScanner for CrtShScan {
 
         Ok(subdomains.into_iter().collect())
     }
-    }
+}

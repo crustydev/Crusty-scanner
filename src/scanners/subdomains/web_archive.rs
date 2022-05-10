@@ -27,14 +27,15 @@ impl Scanner for WebArchiveScan {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-struct WebArchiveResults {
-    results: Vec<Vec<String>>
-}
+struct WebArchiveResults (Vec<Vec<String>>);
 
 #[async_trait]
 impl SubdomainScanner for WebArchiveScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
+        log::info!("Getting subdomains from web.archive.org..");
+
         let url = format!("https://web.archive.org/cdx/search/cdx?matchType=domain&fl=original&output=json&collapse=urlkey&url={}", target);
+
         let res = reqwest::get(&url).await?;
 
         if !res.status().is_success() {
@@ -46,7 +47,8 @@ impl SubdomainScanner for WebArchiveScan {
             Err(_) => return Err(Error::InvalidHttpResponse(self.name())),
         };
 
-        let subdomains: HashSet<String> = web_archive_urls.results
+        let subdomains: HashSet<String> = web_archive_urls
+            .0
             .into_iter()
             .flatten()
             .filter_map(|url| {

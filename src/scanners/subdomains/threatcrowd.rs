@@ -7,15 +7,15 @@ use serde::Deserialize;
 use async_trait::async_trait;
 use std::collections::HashSet;
 
-pub struct ThreatcrowdScan {}
+pub struct ThreatCrowdScan {}
 
-impl ThreatcrowdScan {
+impl ThreatCrowdScan {
     pub fn new() -> Self {
-        return ThreatcrowdScan {}
+        return ThreatCrowdScan {}
     }
 }
 
-impl Scanner for ThreatcrowdScan {
+impl Scanner for ThreatCrowdScan {
     fn name(&self) -> String {
         return String::from("Threatcrowd.org scanner");
     }
@@ -29,13 +29,13 @@ impl Scanner for ThreatcrowdScan {
 /// Json deserialization struct for retrieving results from response body
 /// 
 #[derive(Clone, Debug, Deserialize)]
-struct ThreatcrowdSubdomains {
-    value: String
+struct ThreatCrowdResponse {
+    subdomains: Vec<String>
 }
 
 
 #[async_trait]
-impl SubdomainScanner for ThreatcrowdScan {
+impl SubdomainScanner for ThreatCrowdScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
         log::info!("Getting subdomains from threatcrowd.org...");
 
@@ -46,17 +46,17 @@ impl SubdomainScanner for ThreatcrowdScan {
             return Err(Error::InvalidHttpResponse(self.name()));
         }
 
-        let threatcrowd_entries: Vec<ThreatcrowdSubdomains> = match res.json().await {
+        let response: ThreatCrowdResponse = match res.json().await {
             Ok(info) => info,
             Err(_) => return Err(Error::InvalidHttpResponse(self.name()))
         };
         
         // We use a hashset to prevent duplication of data
-        let subdomains: HashSet<String> = threatcrowd_entries
+        let subdomains: HashSet<String> = response
+            .subdomains
             .into_iter()
             .map(|entry| {
                 entry
-                    .value
                     .split("\n")
                     .map(|subdomain| subdomain.trim().to_string())
                     .collect::<Vec<String>>()

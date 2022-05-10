@@ -35,11 +35,12 @@ impl Scanner for BruteForceScan {
 #[async_trait]
 impl SubdomainScanner for BruteForceScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
+        log::info!("Getting subdomains by bruteforce trial using words from prefixes.txt..");
 
-        let concurrency: usize = 200;
-        let subdomains_file = File::open("subdomainlist.txt")
-            .expect("subdomainlist.txt: open failed for bruteforce subdomain scan");
+        let concurrency: usize = 500;
+        let file_name = String::from("prefixes.txt");
 
+        let subdomains_file = File::open(&file_name)?;
         let reader = BufReader::new(subdomains_file);
 
         let start_time = Instant::now();
@@ -49,6 +50,7 @@ impl SubdomainScanner for BruteForceScan {
 
         tokio::spawn(async move {
             for line in reader.lines() {
+                log::info!("{:?} sending..", &line);
                 let _ = input_tx.send(line).await;
             }
         });
@@ -60,6 +62,7 @@ impl SubdomainScanner for BruteForceScan {
                 let prefix = prefix.unwrap();
                 async move {
                     let subdomain = format!("{}.{}", prefix, &target);
+                    log::info!("bruteforce subdomain: {}", &subdomain);
                     let _ = output_tx.send(subdomain).await; 
                 }
             })
