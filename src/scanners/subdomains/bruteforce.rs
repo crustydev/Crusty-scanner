@@ -37,7 +37,7 @@ impl SubdomainScanner for BruteForceScan {
     async fn get_subdomains(&self, target: &str) -> Result<Vec<String>, Error> {
         log::info!("Getting subdomains by bruteforce trial using words from prefixes.txt..");
 
-        let concurrency: usize = 500;
+        let concurrency: usize = 1000000;
         let file_name = String::from("prefixes.txt");
 
         let subdomains_file = File::open(&file_name)?;
