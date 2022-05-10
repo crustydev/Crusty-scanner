@@ -18,12 +18,10 @@ pub fn cve_scanners() -> Vec<Box<dyn CveScanner>> {
 
 pub fn subdomain_scanners() -> Vec<Box<dyn SubdomainScanner>> {
     return vec![
-        Box::new(subdomains::BruteForceScan::new()),
-        Box::new(subdomains::CrtShScan::new()),
-        Box::new(subdomains::Sublist3rScan::new()),
-        Box::new(subdomains::ThreatcrowdScan::new()),
-        Box::new(subdomains::ThreatMinerScan::new()),
-        Box::new(subdomains::UrlScan::new()),
+        //Box::new(subdomains::BruteForceScan::new()),
+        //Box::new(subdomains::CrtShScan::new()),
+        //Box::new(subdomains::ThreatCrowdScan::new()),
+        //Box::new(subdomains::ThreatMinerScan::new()),
         Box::new(subdomains::WebArchiveScan::new())
     ];
 }

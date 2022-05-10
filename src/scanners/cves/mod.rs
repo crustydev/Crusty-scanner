@@ -12,3 +12,4 @@ pub use gitlab_open_registrations::GitlabOpenScan;
 
 mod prometheus_dashboard_unauthenticated_access;
 pub use prometheus_dashboard_unauthenticated_access::PrometheusDashboardScan;
+
