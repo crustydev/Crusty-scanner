@@ -58,8 +58,8 @@ pub fn scan(target: &str) -> Result<(), Error> {
     let http_client = Client::builder().timeout(http_timeout).build()?;
     let dns_resolver = utils::new_dns_resolver();
 
-    let subdomains_concurrency = 20;
-    let dns_concurrency = 100;
+    let subdomains_concurrency = 100;
+    let dns_concurrency = 200;
     let ports_concurrency = 200;
     let vulnerabilities_concurrency = 20;
     let scan_start_time = Instant::now();
@@ -101,7 +101,7 @@ pub fn scan(target: &str) -> Result<(), Error> {
             })
             .collect();
 
-        log::info!("Found {} domains", subdomains.len());
+        log::info!("Found {} possible domains!", subdomains.len());
 
         // Concurrently filter out domains that do not resolve according the Domain Naming System.
         // 
@@ -111,6 +111,8 @@ pub fn scan(target: &str) -> Result<(), Error> {
             .filter_map(|domain| async move { domain })
             .collect()
             .await;
+
+        log::info!("Found {} domains that resolve!", subdomains.len());
 
         // Scan each subdomain for its open ports
         // 
