@@ -24,7 +24,7 @@ pub type Resolver = Arc<AsyncResolver<GenericConnection, GenericConnectionProvid
 /// are active, and returns the subdomain with a vector of its active ports.
 /// 
 pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
-    log::info!("Scanning subdomain: {} for open ports....", &subdomain.domain_name);
+    log::info!("{}. Scanning for open ports:....", &subdomain.domain_name);
 
     let mut result = subdomain.clone();
 
@@ -76,20 +76,24 @@ pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
 /// port.
 ///  
 async fn scan_port(mut socket_address: SocketAddr, port: u16) -> Port {
-    let timeout = Duration::from_secs(5);
+    let timeout = Duration::from_secs(3);
+    let mut is_open = false;
 
     socket_address.set_port(port);
 
-    let is_open = matches!(
-        tokio::time::timeout(timeout, TcpStream::connect(&socket_address)).await,
-        Ok(Ok(_)),
-    );
+    if tokio::time::timeout(timeout, TcpStream::connect(&socket_address))
+        .await
+        .is_ok()
+            {
+                is_open = true;
+            }
 
     return Port {
         port: port,
         conn_open: is_open,
     }
 }
+
 
 /// Creates a new trust_dns_resolver
 pub fn new_dns_resolver() -> Resolver {
@@ -118,6 +122,8 @@ pub async fn resolve_dns(dns_resolver: &Resolver, subdomain: Subdomain) -> Optio
 /// 
 #[derive(Error, Debug, Clone)]
 pub enum Error {
+    #[error("{0}, File Open Error")]
+    FileOpenError(String),
     #[error("{0}, Invalid HTTP response")]
     InvalidHttpResponse(String),
     #[error("{0}, Reqwest Error")]
@@ -138,5 +144,14 @@ impl std::convert::From<tokio::task::JoinError> for Error {
 impl std::convert::From<reqwest::Error> for Error {
     fn from(error_message: reqwest::Error) -> Self {
         return Error::ReqwestError(error_message.to_string());
+    }
+}
+
+
+/// Converts std::io::error to custom enum Error for uniform reporting
+/// 
+impl std::convert::From<std::io::Error> for Error {
+    fn from(error_message: std::io::Error) -> Self {
+        return Error::FileOpenError(error_message.to_string());
     }
 }
