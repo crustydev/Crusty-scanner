@@ -6,6 +6,7 @@ pub mod models;
 mod subdomains;
 mod cves;
 
+
 pub fn cve_scanners() -> Vec<Box<dyn CveScanner>> {
     return vec![
         Box::new(cves::DotEnvScan::new()),

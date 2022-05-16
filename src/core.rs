@@ -61,7 +61,7 @@ pub fn scan(target: &str) -> Result<(), Error> {
     let subdomains_concurrency = 100;
     let dns_concurrency = 200;
     let ports_concurrency = 200;
-    let vulnerabilities_concurrency = 20;
+    //let vulnerabilities_concurrency = 20;
     let scan_start_time = Instant::now();
 
     let subdomains_modules = scanners::subdomain_scanners();
@@ -101,7 +101,7 @@ pub fn scan(target: &str) -> Result<(), Error> {
             })
             .collect();
 
-        log::info!("Found {} possible domains!", subdomains.len());
+        log::info!("Found {} possible domains.", subdomains.len());
 
         // Concurrently filter out domains that do not resolve according the Domain Naming System.
         // 
@@ -132,6 +132,8 @@ pub fn scan(target: &str) -> Result<(), Error> {
             }
         }
 
+
+        /*
         println!("---------------------- Vulnerabilities ----------------------");
 
         // Scan each socket address for vulnerabilities
@@ -160,6 +162,7 @@ pub fn scan(target: &str) -> Result<(), Error> {
                 }
             })
             .await;
+        */
     });
 
     let scan_duration = scan_start_time.elapsed();
