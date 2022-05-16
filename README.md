@@ -13,7 +13,7 @@ This is an asynchronous Rust program, running on the Tokio.rs runtime, that take
 To scan a target domain:  
 `cargo run scan <target_domain>`  
 for example:  
-`cargo run scan <google.com>`  
+`cargo run scan google.com`  
 
 
 To list scanners:  
