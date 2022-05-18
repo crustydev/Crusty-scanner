@@ -1,6 +1,6 @@
 use crate::{
     scanners::traits::{Scanner, SubdomainScanner},
-    utils::Error
+    error::Error
 };
 
 use serde::Deserialize;

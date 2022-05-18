@@ -1,5 +1,5 @@
 use crate::scanners::traits::{Scanner, SubdomainScanner};
-use crate::utils::Error;
+use crate::error::Error;
 
 use std::{
     fs::File,

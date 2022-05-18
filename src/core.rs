@@ -5,7 +5,7 @@ use std::iter::FromIterator;
 use std::time::Instant;
 
 use crate::utils;
-use crate::utils::Error;
+use crate::error::Error;
 
 use crate::scanners;
 use crate::scanners::models::Subdomain;

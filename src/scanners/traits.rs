@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 
-use crate::utils::Error;
+use crate::error::Error;
 
 
 /// Scanner trait

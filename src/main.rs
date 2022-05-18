@@ -7,6 +7,7 @@ mod core;
 mod scanners;
 mod utils;
 mod ports_list;
+mod error;
 
 
 fn main() -> Result<()> {
