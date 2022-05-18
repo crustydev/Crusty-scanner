@@ -17,8 +17,8 @@ fn main() -> Result<()> {
         .version(clap::crate_version!())
         .about(clap::crate_description!())
         .subcommand(SubCommand::with_name("scanners").about("List scanner modules"))
-        .subcommand(SubCommand::with_name("about").about("Provide details on program"))
-        .subcommand(SubCommand::with_name("help").about("Details of use"))
+        .subcommand(SubCommand::with_name("about").about("Provide program description"))
+        .subcommand(SubCommand::with_name("help").about("How to use"))
         .subcommand(
             SubCommand::with_name("scan").about("Scan a target domain").arg(
                 Arg::with_name("target")
