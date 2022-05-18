@@ -12,8 +12,8 @@ use tokio::sync::mpsc;
 use futures::StreamExt;
 
 
-
 pub struct BruteForceScan {}
+
 
 impl BruteForceScan {
     pub fn new() -> Self {
