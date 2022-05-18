@@ -1,11 +1,11 @@
 # Crusty-scanner v1
 
-Subdomain enumeration tool written in RustLang.
+Subdomain enumeration tool written in RustLang for asset discovery in security reconaissance.
 
 
 ## About
 
-This is an asynchronous Rust program, running on the Tokio.rs runtime, that takes in a target domain and uses a variety of sources to retrieve its subdomains. For each subdomain it finds, it scans to check what ports for which a connection can be opened over the subdomain. It returns a list of open ports for each subdomain.
+This is an asynchronous Rust program that runs on the Tokio.rs runtime, taking in a target domain and using a variety of sources to retrieve its subdomains. For each subdomain it finds, it scans to check what ports for which a connection can be opened over the subdomain. It returns a list of open ports for each subdomain.
 
 
 ## Usage
