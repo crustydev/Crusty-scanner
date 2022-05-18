@@ -57,7 +57,7 @@ pub async fn scan_ports(concurrency: usize, subdomain: Subdomain) -> Subdomain {
         .for_each_concurrent(concurrency, |port| {
             let output_tx = output_tx.clone();
             async move {
-                let port = scan_port(address, port).await;
+                let port: Port = scan_port(address, port).await;
                 if port.conn_open {
                     let _ = output_tx.send(port).await;
                 }
